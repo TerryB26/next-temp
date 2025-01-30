@@ -15,7 +15,7 @@ const InfoCard = ({ header, innerText }) => {
         <Box
           sx={{
             textAlign: "center",
-            bgcolor: "#1f2c47",
+            bgcolor: "#5b4689",
             mb: -2,
             zIndex: 1,
             py: 0.5,
