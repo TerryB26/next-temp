@@ -45,9 +45,9 @@ const Sidebar = () => {
           <Box p={2} textAlign="center" mt={0}>
             <img src="/images/Earth.png" alt="System Logo" style={{ width: '80%' }} />
           </Box>
-          <List sx={{ mt: 0 }}>
+          <List sx={{ mt: 20 }}>
             {[
-              { text: 'Home', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/' },
+              { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard' },
 
             ].map((item, index) => (
               <ListItem

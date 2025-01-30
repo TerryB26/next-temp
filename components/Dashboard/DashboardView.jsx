@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Dialog, DialogTitle, DialogContent, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, TableSortLabel, TablePagination} from "@mui/material";
+import { IconButton, Box, Grid, Dialog, DialogTitle, DialogContent, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, TableSortLabel, TablePagination} from "@mui/material";
 import PageHeader from "@/components/General/PageHeader";
 import InfoCard from "@/components/General/InfoCard";
 import { MdOutlineAdsClick, MdNavigateBefore, MdNavigateNext, MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
@@ -8,6 +8,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import BarGraph from '@/components/Statistics/BarGraph';
 import PieChart from '@/components/Statistics/PieChart';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
+import DialogForm from '@/components/General/DialogForm';
+import { LuCloudDownload } from "react-icons/lu";
+
 
 
 const DashboardView = () => {
@@ -31,26 +34,18 @@ const DashboardView = () => {
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('user');
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);    
-    const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [dialogTitle, setDialogTitle] = React.useState('');
-    const [currentSet, setCurrentSet] = React.useState(0);
-    const [currentSet2, setCurrentSet2] = React.useState(0);
-    const [visibility, setVisibility] = React.useState({
-      total: true,
-      approved: true,
-      rejected: true,
-      awaiting: true,
-    });
-  
-    const handleDialogOpen = (title) => {
-      setDialogTitle(title);
-      setDialogOpen(true);
-    };
-  
-    const handleDialogClose = () => {
-      setDialogOpen(false);
-    };
+    const [rowsPerPage, setRowsPerPage] = useState(5); 
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState('');  
+    
+    const handleIconClick = (title) => {
+        setDialogTitle(title);
+        setDialogOpen(true);
+      };
+    
+      const handleClose = () => {
+        setDialogOpen(false);
+      };
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -93,6 +88,11 @@ const DashboardView = () => {
 
       const paginatedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+      const handleDownload = (UserData) => {
+        console.log("🚀 ~ handleDownload ~ user:", UserData)
+      };
+      
+
 
   return (
     <div style={{ padding: "20px" }}>
@@ -107,6 +107,7 @@ const DashboardView = () => {
                 <>
                   <MdOutlineAdsClick
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
+                    onClick={() => handleIconClick('Card 1')}
                   />
                   1
                 </>
@@ -120,6 +121,7 @@ const DashboardView = () => {
                 <>
                   <MdOutlineAdsClick
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
+                    onClick={() => handleIconClick('Card 2')}
                   />
                   2
                 </>
@@ -133,6 +135,7 @@ const DashboardView = () => {
                 <>
                   <MdOutlineAdsClick
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
+                    onClick={() => handleIconClick('Card 3')}
                   />
                   3
                 </>
@@ -146,6 +149,7 @@ const DashboardView = () => {
                 <>
                   <MdOutlineAdsClick
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
+                    onClick={() => handleIconClick('Card 4')}
                   />
                   4
                 </>
@@ -153,35 +157,6 @@ const DashboardView = () => {
               innerText="40"
             />
           </Grid>
-
-
-        {/* Dialog */}
-        <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="xl" fullWidth>
-          <DialogTitle style={{}}>
-            {dialogTitle}
-            <HighlightOffIcon
-              aria-label="close"
-              onClick={handleDialogClose}
-              sx={{
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: (theme) => theme.palette.grey[500],
-                fontSize: 25,
-              }}
-            >
-              <CloseIcon />
-            </HighlightOffIcon>
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            <>
-              <PageHeader routeName={dialogTitle}/>
-            </>
-          </DialogContent>
-         
-        </Dialog>
-
 
         {/* Charts */}
         <Grid item xs={12} md={6}>
@@ -298,20 +273,33 @@ const DashboardView = () => {
                               Total Amount ($)
                             </TableSortLabel>
                           </TableCell>
+                          <TableCell align="right">Actions</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {paginatedData.map((row, index) => (
-                          <TableRow key={index}>
+                            <TableRow
+                            key={index}
+                            sx={{
+                                '&:hover': {
+                                backgroundColor: '#E4F2FF',
+                                },
+                            }}
+                            >
                             <TableCell component="th" scope="row">
-                              {row.user}
+                                {row.user}
                             </TableCell>
                             <TableCell align="right">{row.age}</TableCell>
                             <TableCell align="right">{row.transactions}</TableCell>
                             <TableCell align="right">{row.totalAmount}</TableCell>
-                          </TableRow>
+                            <TableCell align="right">
+                                <IconButton onClick={() => handleDownload(row)}>
+                                <LuCloudDownload />
+                                </IconButton>
+                            </TableCell>
+                            </TableRow>
                         ))}
-                      </TableBody>
+                    </TableBody>
                     </Table>
                   </TableContainer>
                   <TablePagination
@@ -328,6 +316,13 @@ const DashboardView = () => {
             />
         </Grid>
       </Grid>
+
+      <DialogForm
+        title={dialogTitle}
+        content=""
+        open={dialogOpen}
+        onClose={handleClose}
+      />
 
     </div>
   )
