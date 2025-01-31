@@ -3,15 +3,13 @@ import { IconButton, Box, Grid, Dialog, DialogTitle, DialogContent, Divider, Tab
 import PageHeader from "@/components/General/PageHeader";
 import InfoCard from "@/components/General/InfoCard";
 import { MdOutlineAdsClick, MdNavigateBefore, MdNavigateNext, MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import CloseIcon from '@mui/icons-material/Close';
 import BarGraph from '@/components/Statistics/BarGraph';
 import PieChart from '@/components/Statistics/PieChart';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
 import { LuCloudDownload } from "react-icons/lu";
-
-
+import axios from 'axios';
+import { FaRegFileWord } from "react-icons/fa6";
 
 const DashboardView = () => {
 
@@ -88,9 +86,38 @@ const DashboardView = () => {
 
       const paginatedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-      const handleDownload = (UserData) => {
-        console.log("🚀 ~ handleDownload ~ user:", UserData)
+      const handleDownload = async (UserData, Type) => {
+        try {
+          const response = await axios.post(
+            "/api/GenWordReport",
+            { userData: UserData, Type: Type }, // Include Type (docx or pdf)
+            { responseType: "blob" } // Important: Expect binary data
+          );
+      
+          // Create a blob from the response data
+          const blob = new Blob([response.data], {
+            type:
+              Type === "pdf"
+                ? "application/pdf"
+                : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          });
+      
+          // Create a download link and trigger download
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", `${UserData.user}_report.${Type}`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      
+          // Clean up
+          window.URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error("Error downloading file:", error);
+        }
       };
+            
       
 
 
@@ -293,8 +320,8 @@ const DashboardView = () => {
                             <TableCell align="right">{row.transactions}</TableCell>
                             <TableCell align="right">{row.totalAmount}</TableCell>
                             <TableCell align="right">
-                                <IconButton onClick={() => handleDownload(row)}>
-                                <LuCloudDownload />
+                                <IconButton onClick={() => handleDownload(row,"DOCX")}>
+                                <FaRegFileWord />
                                 </IconButton>
                             </TableCell>
                             </TableRow>
