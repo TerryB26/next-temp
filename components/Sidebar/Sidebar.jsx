@@ -48,10 +48,9 @@ const Sidebar = () => {
           <List sx={{ mt: 20 }}>
             {[
               { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard' },
-
             ].map((item, index) => (
               <ListItem
-                button={true}
+                button
                 key={item.text}
                 onClick={() => handleNavigation(item.path)}
                 sx={{
