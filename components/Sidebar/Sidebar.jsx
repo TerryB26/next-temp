@@ -3,6 +3,7 @@ import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, Ap
 import { MdMenu, MdHome, MdSettings, MdInfo } from 'react-icons/md';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
+import { IoLibraryOutline } from "react-icons/io5";
 
 const theme = createTheme({
   palette: {
@@ -48,6 +49,7 @@ const Sidebar = () => {
           <List sx={{ mt: 20 }}>
             {[
               { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard' },
+              { text: 'Library', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Library' },
             ].map((item, index) => (
               <ListItem
                 button

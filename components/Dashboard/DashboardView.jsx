@@ -10,6 +10,7 @@ import DialogForm from '@/components/General/DialogForm';
 import { LuCloudDownload } from "react-icons/lu";
 import axios from 'axios';
 import { FaRegFileWord } from "react-icons/fa6";
+import { FaRegFilePdf } from "react-icons/fa";
 
 const DashboardView = () => {
 
@@ -88,10 +89,11 @@ const DashboardView = () => {
 
       const handleDownload = async (UserData, Type) => {
         try {
+          const url = Type === "pdf" ? "/api/GenPDFReport" : "/api/GenWordReport";
           const response = await axios.post(
-            "/api/GenWordReport",
-            { userData: UserData, Type: Type }, // Include Type (docx or pdf)
-            { responseType: "blob" } // Important: Expect binary data
+            url,
+            { userData: UserData, Type: Type }, 
+            { responseType: "blob" } 
           );
       
           // Create a blob from the response data
@@ -103,23 +105,20 @@ const DashboardView = () => {
           });
       
           // Create a download link and trigger download
-          const url = window.URL.createObjectURL(blob);
+          const downloadUrl = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
-          link.href = url;
+          link.href = downloadUrl;
           link.setAttribute("download", `${UserData.user}_report.${Type}`);
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
       
           // Clean up
-          window.URL.revokeObjectURL(url);
+          window.URL.revokeObjectURL(downloadUrl);
         } catch (error) {
           console.error("Error downloading file:", error);
         }
       };
-            
-      
-
 
   return (
     <div style={{ padding: "20px" }}>
@@ -128,7 +127,7 @@ const DashboardView = () => {
       <Grid container spacing={3}>
         {/* Info Cards */}
         
-          <Grid item xs={12} md={3} key="Total">
+          <Grid item xs={12} md={3} key="Total1">
             <InfoCard
               header={
                 <>
@@ -142,7 +141,7 @@ const DashboardView = () => {
               innerText="10"
             />
           </Grid>
-          <Grid item xs={12} md={3} key="Total">
+          <Grid item xs={12} md={3} key="Total2">
             <InfoCard
               header={
                 <>
@@ -156,7 +155,7 @@ const DashboardView = () => {
               innerText="20"
             />
           </Grid>
-          <Grid item xs={12} md={3} key="Total">
+          <Grid item xs={12} md={3} key="Total3">
             <InfoCard
               header={
                 <>
@@ -170,7 +169,7 @@ const DashboardView = () => {
               innerText="30"
             />
           </Grid>
-          <Grid item xs={12} md={3} key="Total">
+          <Grid item xs={12} md={3} key="Total4">
             <InfoCard
               header={
                 <>
