@@ -117,7 +117,11 @@ const Users = () => {
           <TableBody>
           {filteredUsers.length > 0 ? (
               filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow key={user.id}>
+                <TableRow key={user.id}  sx={{
+                    '&:hover': {
+                    backgroundColor: '#E4F2FF',
+                    },
+                }}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
