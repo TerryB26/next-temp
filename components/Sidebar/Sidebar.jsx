@@ -52,7 +52,7 @@ const Sidebar = () => {
               { text: 'Library', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Library' },
             ].map((item, index) => (
               <ListItem
-                button
+                button={true}
                 key={item.text}
                 onClick={() => handleNavigation(item.path)}
                 sx={{
