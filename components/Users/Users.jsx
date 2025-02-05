@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Table, TableBody,Typography , TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination } from '@mui/material';
+import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
+import UsersForm from '@/components/Users/AddUsersForm';
+import DialogForm from '@/components/General/DialogForm';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -14,9 +16,19 @@ const PaginationContainer = styled('div')(({ theme }) => ({
 }));
 
 const CustomTableHead = styled(TableHead)(({ theme }) => ({
-    backgroundColor: '#ECEBF9',
-  }));
-  
+  backgroundColor: '#ECEBF9',
+}));
+
+const AddUserButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  borderRadius: "8px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  textTransform: "none",
+  '&:hover': {
+    backgroundColor: "#ECEBF9",
+  },
+}));
 
 const Users = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,15 +39,19 @@ const Users = () => {
     { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
     { id: 3, name: 'Mike Johnson', email: 'mike@example.com' },
   ]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+  
+  const handleClearSearch = () => {
+    setSearchQuery('');
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -47,13 +63,17 @@ const Users = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleClearSearch = () => {
-    setSearchQuery('');
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
           placeholder='Search by User Name'
@@ -103,10 +123,21 @@ const Users = () => {
         >
           Clear
         </Button>
-      </div>
+      </Box>
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <AddUserButton variant="contained" onClick={handleDialogOpen}>
+          Add User
+        </AddUserButton>
+      </Box>
+      <DialogForm
+        title="Add User"
+        content={<UsersForm />}
+        open={isDialogOpen}
+        onClose={handleDialogClose}
+      />
       <TableContainer component={Paper}>
         <Table>
-        <CustomTableHead>
+          <CustomTableHead>
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
@@ -115,12 +146,12 @@ const Users = () => {
             </TableRow>
           </CustomTableHead>
           <TableBody>
-          {filteredUsers.length > 0 ? (
+            {filteredUsers.length > 0 ? (
               filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow key={user.id}  sx={{
-                    '&:hover': {
+                <TableRow key={user.id} sx={{
+                  '&:hover': {
                     backgroundColor: '#E4F2FF',
-                    },
+                  },
                 }}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>

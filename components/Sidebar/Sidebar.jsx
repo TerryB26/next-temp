@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, AppBar, Toolbar } from '@mui/material';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, AppBar, Toolbar, useMediaQuery } from '@mui/material';
 import { MdMenu, MdHome, MdSettings, MdInfo } from 'react-icons/md';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
@@ -16,6 +16,7 @@ const theme = createTheme({
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const router = useRouter();
+  const isMobile = useMediaQuery('(max-width:500px)');
 
   const toggleDrawer = () => {
     setOpen(!open);
