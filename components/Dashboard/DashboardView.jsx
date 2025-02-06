@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { IconButton, Box, Grid, Dialog, DialogTitle, DialogContent, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, TableSortLabel, TablePagination} from "@mui/material";
 import PageHeader from "@/components/General/PageHeader";
 import InfoCard from "@/components/General/InfoCard";
@@ -11,6 +11,8 @@ import { LuCloudDownload } from "react-icons/lu";
 import axios from 'axios';
 import { FaRegFileWord } from "react-icons/fa6";
 import { FaRegFilePdf } from "react-icons/fa";
+import { fetchData } from '@/library/apiClient';
+import { queryKeys } from '@/library/queries';
 
 const DashboardView = () => {
 
@@ -104,7 +106,6 @@ const DashboardView = () => {
                 : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
           });
       
-          // Create a download link and trigger download
           const downloadUrl = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = downloadUrl;
@@ -119,6 +120,17 @@ const DashboardView = () => {
           console.error("Error downloading file:", error);
         }
       };
+
+      useEffect(() => {
+        const fetchUsers = async () => {
+          try {
+            const data = await fetchData(queryKeys.GET_USERS);
+          } catch (error) {
+            console.error('Failed to fetch users:', error);
+          }
+        };
+        fetchUsers();
+      }, []);
 
   return (
     <div style={{ padding: "20px" }}>
