@@ -4,6 +4,8 @@ import { MdOutlineDashboardCustomize } from "react-icons/md"
 import { RxDashboard } from "react-icons/rx"
 import { CiLogin } from "react-icons/ci"
 import Link from 'next/link'
+import axios from 'axios';
+import React, { useState } from 'react';
 
 export default function Home() {
   return (

@@ -1,34 +1,21 @@
-import React, { useState,useEffect } from 'react';
-import { IconButton, Box, Grid, Dialog, DialogTitle, DialogContent, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, TableSortLabel, TablePagination} from "@mui/material";
-import PageHeader from "@/components/General/PageHeader";
+import DialogForm from '@/components/General/DialogForm';
 import InfoCard from "@/components/General/InfoCard";
-import { MdOutlineAdsClick, MdNavigateBefore, MdNavigateNext, MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import PageHeader from "@/components/General/PageHeader";
 import BarGraph from '@/components/Statistics/BarGraph';
 import PieChart from '@/components/Statistics/PieChart';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import DialogForm from '@/components/General/DialogForm';
-import { LuCloudDownload } from "react-icons/lu";
+import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField } from "@mui/material";
 import axios from 'axios';
+import { useState } from 'react';
 import { FaRegFileWord } from "react-icons/fa6";
-import { FaRegFilePdf } from "react-icons/fa";
-import { fetchData } from '@/library/apiClient';
-import { queryKeys } from '@/library/queries';
+import { MdOutlineAdsClick } from "react-icons/md";
+import { FaRegFilePdf } from "react-icons/fa6";
+
 
 const DashboardView = () => {
 
     const dummyData = [
         { user: 'John Doe', age: 28, transactions: 5, totalAmount: 1500 },
-        { user: 'Jane Smith', age: 34, transactions: 8, totalAmount: 2300 },
-        { user: 'Alice Johnson', age: 45, transactions: 3, totalAmount: 1200 },
-        { user: 'Bob Brown', age: 23, transactions: 7, totalAmount: 1900 },
-        { user: 'John Doe', age: 28, transactions: 5, totalAmount: 1500 },
-        { user: 'Jane Smith', age: 34, transactions: 8, totalAmount: 2300 },
-        { user: 'Alice Johnson', age: 45, transactions: 3, totalAmount: 1200 },
-        { user: 'Bob Brown', age: 23, transactions: 7, totalAmount: 1900 },
-        { user: 'John Doe', age: 28, transactions: 5, totalAmount: 1500 },
-        { user: 'Jane Smith', age: 34, transactions: 8, totalAmount: 2300 },
-        { user: 'Alice Johnson', age: 45, transactions: 3, totalAmount: 1200 },
-        { user: 'Bob Brown', age: 23, transactions: 7, totalAmount: 1900 },
       ];
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -91,46 +78,35 @@ const DashboardView = () => {
 
       const handleDownload = async (UserData, Type) => {
         try {
-          const url = Type === "pdf" ? "/api/GenPDFReport" : "/api/GenWordReport";
+          const url = "/api/GenWordReport";
           const response = await axios.post(
             url,
-            { userData: UserData, Type: Type }, 
-            { responseType: "blob" } 
+            { userData: UserData, Type: "DOCX" }, 
+            { responseType: "blob" }
           );
       
-          // Create a blob from the response data
-          const blob = new Blob([response.data], {
-            type:
-              Type === "pdf"
-                ? "application/pdf"
-                : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          const docxBlob = new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
           });
       
-          const downloadUrl = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = downloadUrl;
-          link.setAttribute("download", `${UserData.user}_report.${Type}`);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      
-          // Clean up
-          window.URL.revokeObjectURL(downloadUrl);
+          if (Type === "DOCX") {
+            // Download DOCX directly
+            const downloadUrl = window.URL.createObjectURL(docxBlob);
+            const link = document.createElement("a");
+            link.href = downloadUrl;
+            link.setAttribute("download", `${UserData.user}_report.docx`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(downloadUrl);
+          } else if (Type === "PDF") {
+
+          }
         } catch (error) {
           console.error("Error downloading file:", error);
         }
       };
-
-      useEffect(() => {
-        const fetchUsers = async () => {
-          try {
-            const data = await fetchData(queryKeys.GET_USERS);
-          } catch (error) {
-            console.error('Failed to fetch users:', error);
-          }
-        };
-        fetchUsers();
-      }, []);
+    
 
   return (
     <div style={{ padding: "20px" }}>
@@ -333,6 +309,9 @@ const DashboardView = () => {
                             <TableCell align="right">
                                 <IconButton onClick={() => handleDownload(row,"DOCX")}>
                                 <FaRegFileWord />
+                                </IconButton>
+                                <IconButton onClick={() => handleDownload(row,"PDF")}>
+                                <FaRegFilePdf />
                                 </IconButton>
                             </TableCell>
                             </TableRow>
